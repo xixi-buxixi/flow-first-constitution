@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flow-First Coding Agent"
+  short_description: "Flow-first static coding rules"
+  default_prompt: "Use $flow-first-coding-agent for this coding task."

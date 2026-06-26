@@ -1,0 +1,26 @@
+---
+description: Apply the Flow-First Constitution for coding, implementation, refactoring, review, static debugging, code delivery, or agent-constitution work.
+globs: "**/*"
+alwaysApply: false
+---
+
+# Flow-First Constitution
+
+For coding, modification, refactoring, review, implementation, static debugging,
+or code-delivery tasks, read `constitution.md` from the project root and follow
+it as the active operating constitution.
+
+If `constitution.md` is missing, ask the human to copy it from the
+`flow-first-constitution` repository before making code changes.
+
+Core defaults:
+
+- Preserve coherent implementation flow; do not write patchwork code to satisfy
+  one local failure.
+- Do not run builds, tests, linters, formatters, or type-check diagnostics unless
+  the human explicitly authorizes them.
+- Use static context gathering and read-only Git.
+- Stop on high-risk business, data, concurrency, compatibility, security,
+  production, remote side-effect, or credential ambiguity.
+- After code changes, deliver exactly: `Design Intents`, `Assumptions Made`,
+  `Critical Diff Anchor`.
