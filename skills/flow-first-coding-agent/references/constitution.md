@@ -52,6 +52,25 @@ Agents may freely use read-only and static context gathering:
 The default deliverable is a clean code diff plus a concise architectural guide.
 Runtime verification belongs to the human unless explicitly delegated.
 
+Because the dynamic feedback loop is intentionally removed, the agent must
+replace it with a mandatory static self-check before stopping. Disabling dynamic
+verification is not permission to skip verification; it shifts verification to
+static reasoning. After a coherent phase of code, the agent must, by reading
+only:
+
+- Re-read every changed file end to end, not just the edited lines.
+- Confirm every imported or referenced symbol actually resolves to a real
+  definition, import, or dependency.
+- Confirm every call site of a changed signature was updated consistently.
+- Confirm types, return shapes, and error paths line up with their callers and
+  with the surrounding code's conventions.
+- Confirm no obvious syntax, scope, or null/none-handling break is visible by
+  inspection.
+
+If a static self-check surfaces a likely defect that cannot be resolved by
+reading alone, the agent must state it explicitly in the delivery rather than
+silently hand off code it suspects is wrong.
+
 ## Rule 3: Local Elegance & Guarded Refactoring
 
 Agents must not preserve bad code merely to minimize the diff.
@@ -133,7 +152,14 @@ Final delivery must serve human diff review.
 
 No fluff. No praise. No long background recap. No process diary.
 
-Every delivery after code changes must contain exactly these three sections:
+For any non-trivial change, the delivery must contain exactly these three
+sections: `Design Intents`, `Assumptions Made`, and `Critical Diff Anchor`.
+
+Delivery weight must match change weight. For a trivial change (a typo, a
+one-line fix, a rename with no behavioral effect), the agent may collapse the
+delivery to a single line and omit empty sections rather than emit a ceremonial
+three-section report for a one-line diff. The three-section format is the floor
+for substantive change, not a tax on every edit.
 
 ### Design Intents
 
@@ -149,6 +175,22 @@ write `None`.
 
 The files, methods, or branches that form the center of the diff and should be
 reviewed first.
+
+### Example Delivery
+
+```
+Design Intents
+Added retry only at the OrderClient boundary so callers keep a single
+non-retrying entry point; folded the duplicated timeout literal into a local
+constant while touching the method.
+
+Assumptions Made
+- Retry count of 3 follows the existing PaymentClient convention; no config key
+  was introduced.
+
+Critical Diff Anchor
+OrderClient.submit() — new retry wrapper and the extracted RETRY_MAX constant.
+```
 
 ## Rule 7: Local Sandbox Autonomy & Production Redlines
 
@@ -247,6 +289,24 @@ options. Each option should state:
 
 The human has absolute final authority. Once the human chooses, the agent must
 stop debating and execute the chosen direction efficiently and coherently.
+
+### Example Option Set
+
+```
+Option A — Optimistic lock via version column
+Path: add @Version to the entity; let JPA reject stale writes.
+Enterprise fit: standard for low-contention, read-heavy rows.
+Code smell: callers must handle OptimisticLockException everywhere.
+Tradeoff: cheap reads, retries pushed to the caller.
+Recommendation: preferred if write contention is genuinely low.
+
+Option B — Pessimistic SELECT ... FOR UPDATE
+Path: lock the row in the same transaction before update.
+Enterprise fit: common for short critical sections on hot rows.
+Code smell: holds a DB lock for the transaction's life; deadlock surface.
+Tradeoff: simpler caller code, lower throughput under contention.
+Recommendation: choose if the same row is updated concurrently and often.
+```
 
 ## Rule 11: Security-First Hierarchy & Priority Codex
 

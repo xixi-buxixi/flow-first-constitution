@@ -11,7 +11,8 @@ Codex, Cursor, Windsurf, Claude Code, and Google Antigravity.
 
 - Prefer coherent implementation flow over red-green test-fix loops.
 - Forbid builds, tests, linters, formatters, and type-check diagnostics unless
-  the human explicitly authorizes them.
+  the human explicitly authorizes them, and replace that feedback loop with a
+  mandatory static self-check before delivery.
 - Allow static context gathering: file reads, reference search, type inspection,
   config reads, project-structure reads, and read-only Git.
 - Permit local elegance and directly related cleanup while blocking broad
@@ -28,17 +29,19 @@ Codex, Cursor, Windsurf, Claude Code, and Google Antigravity.
 constitution.md
 skills/flow-first-coding-agent/
 adapters/
-  codex/
-  cursor/
-  windsurf/
-  claude-code/
-  antigravity/
+  codex/AGENTS.md
+  cursor/.cursor/rules/flow-first-constitution.mdc
+  claude-code/CLAUDE.md
 ```
 
 - `constitution.md` is the canonical rule text for human review.
-- `skills/flow-first-coding-agent/` is the portable Agent Skill package.
-- `adapters/*` contains tool-specific entrypoints that load or point to the
-  constitution without duplicating the full rule text where the tool permits it.
+- `skills/flow-first-coding-agent/` is the single, portable Agent Skill package.
+  Every skill-based tool (Codex, Windsurf, Claude Code, Antigravity) installs
+  this same package; the repository does not keep per-tool skill copies.
+- `adapters/*` contains only the thin, tool-specific entrypoints that cannot be
+  expressed as the shared skill: an `AGENTS.md` for Codex, a `.mdc` rule for
+  Cursor, and a `CLAUDE.md` memory entry for Claude Code. None of them duplicate
+  the full rule text.
 
 ## Codex
 
@@ -55,8 +58,8 @@ adapters/codex/AGENTS.md -> AGENTS.md
 constitution.md -> constitution.md
 ```
 
-The Codex skill uses progressive disclosure: metadata triggers the skill,
-`SKILL.md` loads first, and the full constitution is loaded only from
+The skill uses progressive disclosure: metadata triggers the skill, `SKILL.md`
+loads first, and the full constitution is loaded only from
 `references/constitution.md` when coding/review/delivery work requires it.
 
 ## Cursor
@@ -68,56 +71,59 @@ adapters/cursor/.cursor/rules/flow-first-constitution.mdc
 constitution.md
 ```
 
-The rule is not always-on. It is described for coding, refactoring, review,
-implementation, and code-delivery tasks so Cursor can load it when relevant.
+The rule is Agent-Requested, not always-on: it omits `globs` and is loaded by
+description relevance for coding, refactoring, review, implementation, and
+code-delivery tasks.
 
 ## Windsurf
 
-Windsurf supports Agent Skills. Copy the packaged skill into a project:
+Windsurf supports Agent Skills. Install the shared skill package into the
+location your Windsurf setup uses for local skills, for example:
 
 ```text
-adapters/windsurf/.windsurf/skills/flow-first-coding-agent
+skills/flow-first-coding-agent -> .windsurf/skills/flow-first-coding-agent
 ```
 
-Or install the shared skill package into the location your Windsurf setup uses
-for local skills. The skill preserves progressive disclosure by keeping the full
-constitution in `references/constitution.md`.
+The skill preserves progressive disclosure by keeping the full constitution in
+`references/constitution.md`.
 
 ## Claude Code
 
-Use the Claude Code skill package and optional memory entrypoint:
+Use the shared skill package, plus an optional memory entrypoint:
 
 ```text
-adapters/claude-code/.claude/skills/flow-first-coding-agent
-adapters/claude-code/CLAUDE.md
+skills/flow-first-coding-agent -> <project-or-user>/.claude/skills/flow-first-coding-agent
+adapters/claude-code/CLAUDE.md -> CLAUDE.md
 ```
 
-Copy `.claude/skills/flow-first-coding-agent` into a project or user-level
-Claude Code skills directory. Copy `CLAUDE.md` only when you also want the
-constitution advertised as project memory.
+Copy the skill into a project or user-level Claude Code skills directory. Copy
+`CLAUDE.md` only when you also want the constitution advertised as project
+memory.
 
 ## Antigravity
 
-Google Antigravity can consume Agent Skills. For project-local use, copy:
+Google Antigravity can consume Agent Skills. Install the shared skill package
+into your project or ecosystem skills directory, for example:
 
 ```text
-adapters/antigravity/.agent/skills/flow-first-coding-agent
+skills/flow-first-coding-agent -> .agent/skills/flow-first-coding-agent
 ```
 
-For shared ecosystem/global-style skill directories, use:
-
-```text
-adapters/antigravity/.agents/skills/flow-first-coding-agent
-```
-
-The adapter directory uses the official spelling `antigravity`; this README also
-mentions the common prompt typo `antigrativity`.
+For shared ecosystem/global-style skill directories, use the `.agents/skills/`
+location your Antigravity setup expects. The official spelling is `antigravity`;
+note the common prompt typo `antigrativity`.
 
 ## Maintenance Rules
 
 - Edit the canonical rules in `constitution.md` first.
-- Keep `skills/flow-first-coding-agent/references/constitution.md` synchronized.
-- Keep tool adapters thin; do not duplicate all 11 rules in every adapter.
+- Keep `skills/flow-first-coding-agent/references/constitution.md` synchronized
+  with the canonical text. These are the only two copies of the rule text in the
+  repository; the skill copy exists solely to support progressive disclosure.
+- Keep tool adapters thin: an adapter holds only its tool-specific entrypoint and
+  must never embed the full 11 rules. Every adapter points at the shared skill or
+  the canonical `constitution.md`.
+- Do not add per-tool skill copies. All skill-based tools install the single
+  package under `skills/`.
 - Do not add scripts unless deterministic automation becomes necessary.
 - Do not run dynamic verification unless the human explicitly asks for it.
 

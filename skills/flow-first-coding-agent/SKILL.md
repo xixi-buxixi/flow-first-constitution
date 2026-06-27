@@ -1,6 +1,6 @@
 ---
 name: flow-first-coding-agent
-description: Apply the workspace Agent Constitution for flow-first coding, static alignment, guarded refactoring, read-only Git, no dynamic verification by default, high-density delivery, and security redlines. Use when the coding agent is asked to implement, modify, refactor, review, debug by code inspection, produce a code delivery, or discuss/update the agent constitution for coding behavior.
+description: Apply the workspace Agent Constitution for flow-first coding, static alignment, guarded refactoring, read-only Git, no dynamic verification by default, high-density delivery, and security redlines. Use when the agent is asked to implement, modify, refactor, review, debug by code inspection, produce a code delivery, or discuss/update the agent constitution for coding behavior.
 ---
 
 # Flow-First Coding Agent
@@ -26,9 +26,11 @@ boundaries, or the constitution itself.
    side-effect boundaries require human clarification with concrete options.
 4. Do not run dynamic verification by default: builds, tests, linters,
    formatters, and type-check/build-like diagnostics require explicit human
-   authorization.
-5. Deliver using the constitution's exact three-section format after code
-   changes: `Design Intents`, `Assumptions Made`, and `Critical Diff Anchor`.
+   authorization. Replace that feedback loop with the static self-check in
+   Rule 2 before stopping.
+5. Deliver using the constitution's exact three-section format after non-trivial
+   code changes: `Design Intents`, `Assumptions Made`, and `Critical Diff
+   Anchor`. Trivial changes may collapse to a single line.
 
 ## Reference
 
