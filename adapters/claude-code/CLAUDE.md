@@ -8,6 +8,9 @@ before editing code.
 
 Defaults:
 
+- Triage by scope (conversation / trivial file change / substantive
+  implementation / cross-module or high-risk) to weight handling; the security
+  redlines bind every tier without exception.
 - Static alignment only unless the human explicitly authorizes dynamic
   verification.
 - Coherent implementation flow over test-fix loops.

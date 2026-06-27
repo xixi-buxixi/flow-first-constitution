@@ -14,6 +14,9 @@ If `constitution.md` is missing, ask the human to copy it from the
 
 Core defaults:
 
+- Triage by scope (conversation / trivial file change / substantive
+  implementation / cross-module or high-risk) to weight handling; the security
+  redlines bind every tier without exception.
 - Preserve coherent implementation flow; do not write patchwork code to satisfy
   one local failure.
 - Do not run builds, tests, linters, formatters, or type-check diagnostics unless

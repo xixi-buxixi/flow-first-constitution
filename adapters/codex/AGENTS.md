@@ -8,6 +8,9 @@ If `$flow-first-coding-agent` is installed, use that skill. Otherwise read
 
 Core defaults:
 
+- Triage by scope (conversation / trivial file change / substantive
+  implementation / cross-module or high-risk) to weight handling; the security
+  redlines bind every tier without exception.
 - Use static context gathering first.
 - Do not run builds, tests, linters, formatters, or type-check diagnostics unless
   the human explicitly authorizes them.
